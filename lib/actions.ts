@@ -3,6 +3,7 @@
 import { auth } from "@clerk/nextjs/server";
 import { z } from "zod";
 import prisma from "./prisma";
+import { revalidateTag } from "next/cache";
 
 type State = {
   error?: string;
@@ -31,6 +32,8 @@ export async function addPostAction(prevState: State, formData: FormData): Promi
         authorId: userId,
       }
     })
+
+    revalidateTag("post") // 投稿時に即画面に反映
 
     return {
       error: undefined,
