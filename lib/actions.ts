@@ -3,7 +3,7 @@
 import { auth } from "@clerk/nextjs/server";
 import { z } from "zod";
 import prisma from "./prisma";
-import { revalidateTag } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 
 type State = {
   error?: string;
@@ -56,5 +56,42 @@ export async function addPostAction(prevState: State, formData: FormData): Promi
         success: false,
       }
     }
+  }
+}
+
+export const likeAction = async(postId: string) => {
+  "user server"
+
+  const { userId } = auth();
+
+  if (!userId) {
+    throw new Error("User is not authenticated")
+  }
+
+  try {
+    const existingLike = await prisma.like.findFirst({
+      where: {
+        postId,
+        userId,
+      },
+    })
+
+    if (existingLike) {
+      await prisma.like.delete({
+        where: {
+          id: existingLike.id
+        }
+      })
+    } else {
+      await prisma.like.create({
+        data: {
+          postId,
+          userId,
+        },
+      })
+    }
+    revalidatePath("/")
+  } catch(err) {
+    console.log(err)
   }
 }
