@@ -33,7 +33,10 @@ export default function Header() {
               <UserButton/>
             </SignedIn>
             <SignedOut>
-              <Link className="w-20 inline-block" href={"/sign-in"}>ログイン</Link>
+              <div className="flex space-x-4">
+                <Link className="w-24 inline-block" href={"/sign-up"}>サインアップ</Link>
+                <Link className="w-20 inline-block" href={"/sign-in"}>ログイン</Link>
+              </div>
             </SignedOut>
           </div>
         </div>
