@@ -3,7 +3,7 @@
 import { likeAction } from "@/lib/actions";
 import { Button } from "../ui/button"
 import { HeartIcon, MessageCircleIcon, Share2Icon } from "./Icons"
-import { FormEvent, useOptimistic, useState } from "react";
+import { useOptimistic } from "react";
 import { useAuth } from "@clerk/nextjs";
 
 type PostInteractionProps = {
@@ -38,16 +38,8 @@ const PostInteraction = ({ postId, initialLikes, commentNumber }: PostInteractio
   const handleLikeSubmit = async() => {
     try {
       addOptimisticLike()
-      // setLikeState((prev) => ({
-      //   likeCount: prev.isLiked ? prev.likeCount - 1 : prev.likeCount + 1,
-      //   isLiked: !prev.isLiked,
-      // }))
       await likeAction(postId)
     } catch(err) {
-      // setLikeState((prev) => ({
-      //   likeCount: prev.isLiked ? prev.likeCount + 1 : prev.likeCount - 1,
-      //   isLiked: !prev.isLiked,
-      // }))
       console.log(err)
     }
   }

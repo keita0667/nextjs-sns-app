@@ -1,24 +1,68 @@
+import FollowButton from "@/components/component/FollowButton";
+import PostList from "@/components/component/PostList";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
+import prisma from "@/lib/prisma";
+import { auth } from "@clerk/nextjs/server";
+import { notFound } from "next/navigation";
 
-export default async function ProfilePage() {
+type PageProps = {
+  params: {
+    username: string;
+  };
+};
+
+export default async function ProfilePage({ params }: PageProps) {
+
+  const { userId: currentUserId } = auth()
+
+  if (!currentUserId) {
+    return notFound()
+  }
+
+  const userData = await prisma.user.findFirst({
+    where: { username: params.username },
+    include: {
+      posts: true,
+      _count: {
+        select: {
+          posts: true,
+          following: true,
+          followedBy: true,
+        }
+      },
+      following: {
+        where : {
+          followingId: currentUserId
+        }
+      }
+    }
+  });
+
+  if (userData === null) {
+    return notFound()
+  }
+
+  const isCurrentUser = currentUserId === userData.id
+  const isFollowing = userData.following.length > 0
+
   return (
     <div className="flex flex-col min-h-[100dvh]">
       <main className="flex-1">
-        <div className="container py-6 md:py-10 lg:py-12">
+        <div className="container py-6 md:py-10 lg:py-12 mx-auto">
           <div className="grid gap-6 md:grid-cols-[1fr_300px]">
             <div>
               <div className="flex items-center gap-6">
                 <Avatar className="w-24 h-24 mb-4 md:mb-0">
                   <AvatarImage
-                    src={"/placeholder-user.jpg"}
+                    src={userData?.image || "/placeholder-user.jpg"}
                     alt="Acme Inc Profile"
                   />
                   <AvatarFallback>AI</AvatarFallback>
                 </Avatar>
                 <div>
-                  <h1 className="text-3xl font-bold">SampleUser</h1>
-                  <div className="text-muted-foreground">@SampleUser</div>
+                  <h1 className="text-3xl font-bold">{params.username}</h1>
+                  <div className="text-muted-foreground">@{userData.id}</div>
                 </div>
               </div>
 
@@ -34,25 +78,29 @@ export default async function ProfilePage() {
               </div>
               <div className="mt-6 flex items-center gap-6">
                 <div className="flex flex-col items-center">
-                  <div className="text-2xl font-bold">10</div>
+                  <div className="text-2xl font-bold">{userData._count.posts}</div>
                   <div className="text-muted-foreground">Posts</div>
                 </div>
                 <div className="flex flex-col items-center">
-                  <div className="text-2xl font-bold">300</div>
+                  <div className="text-2xl font-bold">{userData._count.followedBy}</div>
                   <div className="text-muted-foreground">Followers</div>
                 </div>
                 <div className="flex flex-col items-center">
-                  <div className="text-2xl font-bold">100</div>
+                  <div className="text-2xl font-bold">{userData._count.following}</div>
                   <div className="text-muted-foreground">Following</div>
                 </div>
               </div>
 
               <div className="mt-6 h-[500px] overflow-y-auto">
-                Time Line Here
+                <PostList displayUserId={userData.id}/>
               </div>
             </div>
             <div className="sticky top-14 self-start space-y-6">
-              <Button className="w-full">Follow</Button>
+              <FollowButton
+                isCurrentUser={isCurrentUser}
+                isFollowing={isFollowing}
+                profileUserId={userData.id}
+              />
               <div>
                 <h3 className="text-lg font-bold">Suggested</h3>
                 <div className="mt-4 space-y-4">

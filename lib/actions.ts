@@ -95,3 +95,45 @@ export const likeAction = async(postId: string) => {
     console.log(err)
   }
 }
+
+export async function followUser(
+  profileUserId: string
+) {
+  "use server"
+
+  const { userId: loginUserId } = auth();
+
+  if (!loginUserId) {
+    throw new Error("User is not authenticated")
+  }
+
+  try {
+    const existingFollow = await prisma.follow.findFirst({
+      where: {
+        followingId: loginUserId,
+        followerId: profileUserId,
+      },
+    })
+
+    if (existingFollow) {
+      await prisma.follow.delete({
+        where: {
+          followerId_followingId: {
+            followingId: loginUserId,
+            followerId: profileUserId,
+          }
+        }
+      })
+    } else {
+      await prisma.follow.create({
+        data: {
+          followingId: loginUserId,
+          followerId: profileUserId,
+        },
+      })
+    }
+    revalidatePath(`/profile/${profileUserId}`)
+  } catch(err) {
+    console.log(err)
+  }
+}
