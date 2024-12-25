@@ -1,7 +1,7 @@
-import Link from "next/link";
-import { Input } from "@/components/ui/input";
-import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
-import { Button } from "@/components/ui/button";
+import Link from 'next/link';
+import { Input } from '@/components/ui/input';
+import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
+import { Button } from '@/components/ui/button';
 
 export function Component() {
   return (
@@ -209,8 +209,8 @@ export function Component() {
               </div>
               <div className="space-y-2">
                 <p>
-                  Enjoying the beautiful weather today! Who&rsquo;s up for a hike
-                  later?
+                  Enjoying the beautiful weather today! Who&rsquo;s up for a
+                  hike later?
                 </p>
               </div>
               <div className="flex items-center justify-between mt-4">

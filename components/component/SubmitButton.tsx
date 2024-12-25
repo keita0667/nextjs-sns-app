@@ -1,6 +1,6 @@
-import { useFormStatus } from "react-dom"
-import { Button } from "../ui/button"
-import { SendIcon } from "./Icons"
+import { useFormStatus } from 'react-dom';
+import { Button } from '../ui/button';
+import { SendIcon } from './Icons';
 
 const SubmitButton = () => {
   const { pending } = useFormStatus();
@@ -12,7 +12,7 @@ const SubmitButton = () => {
         <span className="sr-only">Tweet</span>
       </Button>
     </>
-  )
-}
+  );
+};
 
-export default SubmitButton
+export default SubmitButton;

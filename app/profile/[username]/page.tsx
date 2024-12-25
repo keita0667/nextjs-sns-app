@@ -1,10 +1,10 @@
-import FollowButton from "@/components/component/FollowButton";
-import PostList from "@/components/component/PostList";
-import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
-import { Button } from "@/components/ui/button";
-import prisma from "@/lib/prisma";
-import { auth } from "@clerk/nextjs/server";
-import { notFound } from "next/navigation";
+import FollowButton from '@/components/component/FollowButton';
+import PostList from '@/components/component/PostList';
+import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
+import { Button } from '@/components/ui/button';
+import prisma from '@/lib/prisma';
+import { auth } from '@clerk/nextjs/server';
+import { notFound } from 'next/navigation';
 
 type PageProps = {
   params: {
@@ -13,11 +13,10 @@ type PageProps = {
 };
 
 export default async function ProfilePage({ params }: PageProps) {
-
-  const { userId: currentUserId } = auth()
+  const { userId: currentUserId } = auth();
 
   if (!currentUserId) {
-    return notFound()
+    return notFound();
   }
 
   const userData = await prisma.user.findFirst({
@@ -29,22 +28,22 @@ export default async function ProfilePage({ params }: PageProps) {
           posts: true,
           following: true,
           followedBy: true,
-        }
+        },
       },
       following: {
-        where : {
-          followingId: currentUserId
-        }
-      }
-    }
+        where: {
+          followingId: currentUserId,
+        },
+      },
+    },
   });
 
   if (userData === null) {
-    return notFound()
+    return notFound();
   }
 
-  const isCurrentUser = currentUserId === userData.id
-  const isFollowing = userData.following.length > 0
+  const isCurrentUser = currentUserId === userData.id;
+  const isFollowing = userData.following.length > 0;
 
   return (
     <div className="flex flex-col min-h-[100dvh]">
@@ -55,7 +54,7 @@ export default async function ProfilePage({ params }: PageProps) {
               <div className="flex items-center gap-6">
                 <Avatar className="w-24 h-24 mb-4 md:mb-0">
                   <AvatarImage
-                    src={userData?.image || "/placeholder-user.jpg"}
+                    src={userData?.image || '/placeholder-user.jpg'}
                     alt="Acme Inc Profile"
                   />
                   <AvatarFallback>AI</AvatarFallback>
@@ -78,21 +77,27 @@ export default async function ProfilePage({ params }: PageProps) {
               </div>
               <div className="mt-6 flex items-center gap-6">
                 <div className="flex flex-col items-center">
-                  <div className="text-2xl font-bold">{userData._count.posts}</div>
+                  <div className="text-2xl font-bold">
+                    {userData._count.posts}
+                  </div>
                   <div className="text-muted-foreground">Posts</div>
                 </div>
                 <div className="flex flex-col items-center">
-                  <div className="text-2xl font-bold">{userData._count.followedBy}</div>
+                  <div className="text-2xl font-bold">
+                    {userData._count.followedBy}
+                  </div>
                   <div className="text-muted-foreground">Followers</div>
                 </div>
                 <div className="flex flex-col items-center">
-                  <div className="text-2xl font-bold">{userData._count.following}</div>
+                  <div className="text-2xl font-bold">
+                    {userData._count.following}
+                  </div>
                   <div className="text-muted-foreground">Following</div>
                 </div>
               </div>
 
               <div className="mt-6 h-[500px] overflow-y-auto">
-                <PostList displayUserId={userData.id}/>
+                <PostList displayUserId={userData.id} />
               </div>
             </div>
             <div className="sticky top-14 self-start space-y-6">

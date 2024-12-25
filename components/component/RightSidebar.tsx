@@ -1,12 +1,12 @@
 // components/RightSidebar.tsx
-import Link from "next/link";
+import Link from 'next/link';
 
 export default function RightSidebar() {
   const trendingTopics = [
-    { tag: "#technology", count: "12.3K" },
-    { tag: "#travel", count: "8.7K" },
-    { tag: "#fashion", count: "6.2K" },
-    { tag: "#food", count: "9.5K" },
+    { tag: '#technology', count: '12.3K' },
+    { tag: '#travel', count: '8.7K' },
+    { tag: '#fashion', count: '6.2K' },
+    { tag: '#food', count: '9.5K' },
   ];
 
   return (

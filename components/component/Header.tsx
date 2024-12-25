@@ -1,11 +1,23 @@
-"use client";
+'use client';
 
-import Link from "next/link";
-import { Input } from "@/components/ui/input";
-import { LogInIcon, SearchIcon, BellIcon, MailIcon } from "./Icons";
-import { SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
+import Link from 'next/link';
+import { Input } from '@/components/ui/input';
+import { LogInIcon, SearchIcon, BellIcon, MailIcon } from './Icons';
+import { SignedIn, SignedOut, UserButton } from '@clerk/nextjs';
+import { useRef } from 'react';
+import { useRouter } from 'next/navigation';
 
 export default function Header() {
+  const inputRef = useRef<HTMLInputElement>(null);
+  const router = useRouter();
+
+  const handleSearchClick = async () => {
+    const inputValue = inputRef.current?.value;
+    const url = inputValue ? `/?query=${inputValue}` : '/';
+
+    router.push(url);
+  };
+
   return (
     <header className="bg-white dark:bg-gray-800 shadow-md px-4 md:px-6 py-3 flex items-center justify-between">
       <Link href="/" className="flex items-center gap-2" prefetch={false}>
@@ -18,8 +30,12 @@ export default function Header() {
             type="text"
             placeholder="Search..."
             className="pr-10 rounded-full"
+            ref={inputRef}
           />
-          <SearchIcon className="absolute right-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+          <SearchIcon
+            className="absolute right-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground"
+            onClick={handleSearchClick}
+          />
         </div>
         <div className="flex items-center gap-4">
           <Link href="#" className="relative" prefetch={false}>
@@ -30,12 +46,16 @@ export default function Header() {
           </Link>
           <div>
             <SignedIn>
-              <UserButton/>
+              <UserButton />
             </SignedIn>
             <SignedOut>
               <div className="flex space-x-4">
-                <Link className="w-24 inline-block" href={"/sign-up"}>サインアップ</Link>
-                <Link className="w-20 inline-block" href={"/sign-in"}>ログイン</Link>
+                <Link className="w-24 inline-block" href={'/sign-up'}>
+                  サインアップ
+                </Link>
+                <Link className="w-20 inline-block" href={'/sign-in'}>
+                  ログイン
+                </Link>
               </div>
             </SignedOut>
           </div>

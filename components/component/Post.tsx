@@ -1,7 +1,7 @@
-import { Avatar, AvatarImage, AvatarFallback } from "@radix-ui/react-avatar"
-import { ClockIcon } from "./Icons"
-import PostInteraction from "./PostInteraction"
-import Link from "next/link"
+import { Avatar, AvatarImage, AvatarFallback } from '@radix-ui/react-avatar';
+import { ClockIcon } from './Icons';
+import PostInteraction from './PostInteraction';
+import Link from 'next/link';
 
 const Post = ({ post }: any) => {
   return (
@@ -11,7 +11,9 @@ const Post = ({ post }: any) => {
     >
       <div className="flex items-center gap-4 mb-4">
         <Avatar className="w-10 h-10">
-          <Link href={`/profile/${post.author.username}`}><AvatarImage src={post.author.image}/></Link>
+          <Link href={`/profile/${post.author.username}`}>
+            <AvatarImage src={post.author.image} />
+          </Link>
           <AvatarFallback>AC</AvatarFallback>
         </Avatar>
         <div>
@@ -55,7 +57,7 @@ const Post = ({ post }: any) => {
         </div>
       )}
     </div>
-  )
-}
+  );
+};
 
-export default Post
+export default Post;

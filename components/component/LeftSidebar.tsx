@@ -1,6 +1,6 @@
 // components/LeftSidebar.tsx
-import Link from "next/link";
-import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
+import Link from 'next/link';
+import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import {
   HomeIcon,
   CompassIcon,
@@ -9,28 +9,49 @@ import {
   MessageCircleIcon,
   HeartIcon,
   SettingsIcon,
-} from "./Icons";
+} from './Icons';
+import { auth } from '@clerk/nextjs/server';
+import prisma from '@/lib/prisma';
 
 const navItems = [
-  { icon: HomeIcon, label: "Home", href: "/" },
-  { icon: CompassIcon, label: "Explore", href: "/explore" },
-  { icon: BookmarkIcon, label: "Bookmarks", href: "/bookmarks" },
-  { icon: UserIcon, label: "Profile", href: "/profile" },
-  { icon: MessageCircleIcon, label: "Messages", href: "/messages" },
-  { icon: HeartIcon, label: "Likes", href: "/likes" },
+  { icon: HomeIcon, label: 'Home', href: '/' },
+  { icon: CompassIcon, label: 'Explore', href: '/explore' },
+  { icon: BookmarkIcon, label: 'Bookmarks', href: '/bookmarks' },
+  { icon: UserIcon, label: 'Profile', href: '/profile' },
+  { icon: MessageCircleIcon, label: 'Messages', href: '/messages' },
+  { icon: HeartIcon, label: 'Likes', href: '/likes' },
 ];
 
-export default function LeftSidebar() {
+export default async function LeftSidebar() {
+  let userInfo;
+  const { userId: loginUserId } = auth();
+
+  if (!loginUserId) {
+    userInfo = null;
+  } else {
+    userInfo = await prisma.user.findFirst({
+      where: {
+        id: loginUserId,
+      },
+    });
+  }
+
   return (
     <div className="bg-white dark:bg-gray-800 text-gray-900 dark:text-white rounded-lg shadow-md p-4 h-full flex flex-col">
       <div className="flex items-center gap-4 mb-6 pb-4 border-b border-gray-200 dark:border-gray-700">
         <Avatar className="w-12 h-12">
-          <AvatarImage src="/placeholder-user.jpg" />
+          <Link href={`profile/${userInfo?.username ?? ''}`}>
+            <AvatarImage src={userInfo?.image ?? './placeholder-user.jpg'} />
+          </Link>
           <AvatarFallback>JD</AvatarFallback>
         </Avatar>
-        <div>
-          <h3 className="text-lg font-bold">John Doe</h3>
-          <p className="text-sm text-gray-600 dark:text-gray-400">@johndoe</p>
+        <div className="">
+          <h3 className="truncate max-w-xs text-lg font-bold">
+            {userInfo?.username ?? 'Avatar'}
+          </h3>
+          <p className="truncate max-w-28 text-sm text-gray-600 dark:text-gray-400">
+            @{userInfo?.id}
+          </p>
         </div>
       </div>
       <nav className="flex-grow">
